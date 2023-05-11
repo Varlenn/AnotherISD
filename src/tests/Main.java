@@ -7,7 +7,8 @@ import java.util.stream.IntStream;
 
 public class Main {
     static List<Student> students;
-    DecimalFormat df = new DecimalFormat( "#.##" );
+    static DecimalFormat df = new DecimalFormat("#.##");
+    static boolean debtMarker;
 
     public static void main(String[] args) {
         Scanner in = new Scanner(System.in);
@@ -57,24 +58,112 @@ public class Main {
         students.add(student3);
         students.add(student4);
 
+
         System.out.println("Введите имя и фамилию студента, оценки которого вы ходите узнать");
         String name = in.nextLine();
-        System.out.println(averageMark(name));
+
+//        System.out.println("Введите предмет");
+//        String subject = in.nextLine();
+//        averageMark(name, subject);
+
+        averageMark(name);
+
+        System.out.println("\nКоличество студентов, не имеющих задолженность: " + debtSearch(false));
+        System.out.println("Количество задолжников: " + debtSearch(true));
+
+        System.out.println("\nКоличество студентов, имеющих более 3 долгов: " + debtSearch());
     }
 
 
-    private static Map<String, Double> averageMark(String name) {
-        Map<String, Double> avMark = new HashMap<String, Double>();
+    private static void averageMark(String name, String subject) {
+        Map<String, String> avMark = new HashMap<String, String>();
         for (final Student st : students) {
             if (st.name.equals(name)) {
-                avMark.put("Математика", (DoubleStream.of(st.marks.get("Математика")).sum()/st.marks.get("Математика").length));
-                avMark.put("Информатика", (DoubleStream.of(st.marks.get("Информатика")).sum()/st.marks.get("Информатика").length));
-                avMark.put("Физика", (DoubleStream.of(st.marks.get("Физика")).sum()/st.marks.get("Физика").length));
-                avMark.put("Философия", (DoubleStream.of(st.marks.get("Философия")).sum()/st.marks.get("Философия").length));
-                avMark.put("Иностранный язык", (DoubleStream.of(st.marks.get("Иностранный язык")).sum()/st.marks.get("Иностранный язык").length));
-                avMark.put("История", (DoubleStream.of(st.marks.get("История")).sum()/st.marks.get("История").length));
+                if (st.marks.containsKey(subject)) {
+                    avMark.put(subject, df.format(DoubleStream.of(st.marks.get(subject)).sum() / st.marks.get(subject).length));
+                }
             }
         }
-        return avMark;
+        System.out.println(avMark);
+    }
+
+    private static void averageMark(String name) {
+        Map<String, String> avMark = new HashMap<String, String>();
+        for (final Student st : students) {
+            if (st.name.equals(name)) {
+                avMark.put("Математика", df.format(DoubleStream.of(st.marks.get("Математика")).sum()/st.marks.get("Математика").length));
+                avMark.put("Информатика", df.format(DoubleStream.of(st.marks.get("Информатика")).sum()/st.marks.get("Информатика").length));
+                avMark.put("Физика", df.format(DoubleStream.of(st.marks.get("Физика")).sum()/st.marks.get("Физика").length));
+                avMark.put("Философия", df.format(DoubleStream.of(st.marks.get("Философия")).sum()/st.marks.get("Философия").length));
+                avMark.put("Иностранный язык", df.format(DoubleStream.of(st.marks.get("Иностранный язык")).sum()/st.marks.get("Иностранный язык").length));
+                avMark.put("История", df.format(DoubleStream.of(st.marks.get("История")).sum()/st.marks.get("История").length));
+            }
+        }
+        System.out.println(avMark);
+    }
+
+
+    public static int debtSearch(boolean debt) {
+        int sum = 0;
+        Map<String, Double> avMark = new HashMap<String, Double>();
+
+        for (final Student st : students) {
+            debtMarker = false;
+            avMark.put("Математика", (DoubleStream.of(st.marks.get("Математика")).sum() / st.marks.get("Математика").length));
+            avMark.put("Информатика", (DoubleStream.of(st.marks.get("Информатика")).sum() / st.marks.get("Информатика").length));
+            avMark.put("Физика", (DoubleStream.of(st.marks.get("Физика")).sum() / st.marks.get("Физика").length));
+            avMark.put("Философия", (DoubleStream.of(st.marks.get("Философия")).sum() / st.marks.get("Философия").length));
+            avMark.put("Иностранный язык", (DoubleStream.of(st.marks.get("Иностранный язык")).sum() / st.marks.get("Иностранный язык").length));
+            avMark.put("История", (DoubleStream.of(st.marks.get("История")).sum() / st.marks.get("История").length));
+
+
+            for (Double c : avMark.values()) {
+                if (c < 2.60) {
+                    debtMarker = true;
+                }
+            }
+            if (debtMarker) {
+                sum++;
+            }
+        }
+        if (!debt) {
+            sum = students.size() - sum;
+        }
+        return sum;
+    }
+
+
+    public static int debtSearch() {
+        int sum = 0;
+        int t = 0;
+        Map<String, Double> avMark = new HashMap<String, Double>();
+
+        for (final Student st : students) {
+            debtMarker = false;
+            avMark.put("Математика", (DoubleStream.of(st.marks.get("Математика")).sum() / st.marks.get("Математика").length));
+            avMark.put("Информатика", (DoubleStream.of(st.marks.get("Информатика")).sum() / st.marks.get("Информатика").length));
+            avMark.put("Физика", (DoubleStream.of(st.marks.get("Физика")).sum() / st.marks.get("Физика").length));
+            avMark.put("Философия", (DoubleStream.of(st.marks.get("Философия")).sum() / st.marks.get("Философия").length));
+            avMark.put("Иностранный язык", (DoubleStream.of(st.marks.get("Иностранный язык")).sum() / st.marks.get("Иностранный язык").length));
+            avMark.put("История", (DoubleStream.of(st.marks.get("История")).sum() / st.marks.get("История").length));
+
+
+            for (Double c : avMark.values()) {
+                if (c < 2.60) {
+                    t++;
+                    debtMarker = true;
+                }
+            }
+            if (debtMarker && t > 3) {
+                sum++;
+            }
+
+        }
+
+        return sum;
     }
 }
+
+
+
+
