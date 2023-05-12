@@ -121,7 +121,7 @@ public class Main {
             case 3 -> System.out.println("Количество задолжников: " + debtSearch(true));
             case 4 -> System.out.println("\nКоличество студентов, не имеющих задолженность: " + debtSearch(false));
             case 5 -> System.out.println("\nКоличество студентов, имеющих более 3 долгов: " + debtSearch());
-            default -> System.out.println("Такого действия не существует, выберите правильное");
+            default -> System.out.println("Такого действия не существует, введите правильное");
         }
     }
 
