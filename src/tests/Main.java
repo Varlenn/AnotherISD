@@ -6,14 +6,24 @@ import java.util.stream.DoubleStream;
 import java.util.stream.IntStream;
 
 public class Main {
+
+    static Scanner in = new Scanner(System.in);
     static List<Student> students;
     static DecimalFormat df = new DecimalFormat("#.##");
     static boolean debtMarker;
+    static int choice = -1;
+    static List<String> studSubjects = new ArrayList<>();
 
     public static void main(String[] args) {
-        Scanner in = new Scanner(System.in);
+
 //        создание списка студентов
         students = new ArrayList<>();
+        studSubjects.add("Математика");
+        studSubjects.add("Информатика");
+        studSubjects.add("Физика");
+        studSubjects.add("Философия");
+        studSubjects.add("Иностранный язык");
+        studSubjects.add("История");
 
 //        заполнение данных о студентах
         Map<String, double[]> mark1 = new HashMap<String, double[]>();
@@ -59,45 +69,98 @@ public class Main {
         students.add(student4);
 
 
-        System.out.println("Введите имя и фамилию студента, оценки которого вы ходите узнать");
-        String name = in.nextLine();
+//        System.out.println("Выберите, что хотите сделать\n(0 - выйти, 1 - узнать оценки студента; \n2 - вывести количество студентов, имеющих задолженность;" +
+//                "\n3 - вывести количество студентов, не имеющих задолженность;\n4 - вывести количество студентов, имеющих более трех задолжностей.)");
+//        choice = in.nextInt();
+        while (choice != 0) {
+            System.out.println("\nВыберите, что хотите сделать\n(0 - выйти, 1 - узнать оценки студента;\n2 - узнать оценки студента по конкретному предмету;" +
+                    "\n3 - вывести количество студентов, имеющих задолженность;" +
+                    "\n4 - вывести количество студентов, не имеющих задолженность;\n5 - вывести количество студентов, имеющих более трех задолжностей.)");
+            choice = in.nextInt();
+            userChoice();
+        }
 
-//        System.out.println("Введите предмет");
-//        String subject = in.nextLine();
-//        averageMark(name, subject);
-
-        averageMark(name);
-
-        System.out.println("\nКоличество студентов, не имеющих задолженность: " + debtSearch(false));
-        System.out.println("Количество задолжников: " + debtSearch(true));
-
-        System.out.println("\nКоличество студентов, имеющих более 3 долгов: " + debtSearch());
+//        System.out.println("Введите имя и фамилию студента, оценки которого вы ходите узнать");
+//        String name = in.nextLine();
+//
+////        System.out.println("Введите предмет");
+////        String subject = in.nextLine();
+////        averageMark(name, subject);
+//
+//        averageMark(name);
+//
+//        System.out.println("\nКоличество студентов, не имеющих задолженность: " + debtSearch(false));
+//        System.out.println("Количество задолжников: " + debtSearch(true));
+//
+//        System.out.println("\nКоличество студентов, имеющих более 3 долгов: " + debtSearch());
     }
 
 
+    private static void userChoice() {
+        switch (choice) {
+            case 0 -> {
+            }
+            case 1 -> {
+                System.out.println("Введите имя и фамилию студента, оценки которого вы ходите узнать");
+                in.nextLine();
+                String name = in.nextLine();
+                averageMark(name);
+            }
+            case 2 -> {
+                System.out.println("Введите предмет");
+                in.nextLine();
+                String subject = in.nextLine();
+                if (!studSubjects.contains(subject)) {
+                    System.out.println("Такого предмета не существует, выберите из существующих:\n" + studSubjects);
+                    break;
+                }
+                System.out.println("Введите имя и фамилию студента, оценки которого вы ходите узнать");
+                String name = in.nextLine();
+                averageMark(name, subject);
+            }
+            case 3 -> System.out.println("Количество задолжников: " + debtSearch(true));
+            case 4 -> System.out.println("\nКоличество студентов, не имеющих задолженность: " + debtSearch(false));
+            case 5 -> System.out.println("\nКоличество студентов, имеющих более 3 долгов: " + debtSearch());
+            default -> System.out.println("Такого действия не существует, выберите правильное");
+        }
+    }
+
     private static void averageMark(String name, String subject) {
         Map<String, String> avMark = new HashMap<String, String>();
+        List<String> names = new ArrayList<>();
         for (final Student st : students) {
             if (st.name.equals(name)) {
                 if (st.marks.containsKey(subject)) {
                     avMark.put(subject, df.format(DoubleStream.of(st.marks.get(subject)).sum() / st.marks.get(subject).length));
                 }
             }
+            names.add(st.name);
         }
+        if (!names.contains(name)) {
+            System.out.println("Студента с таким именем не существует");
+            return;
+        }
+
         System.out.println(avMark);
     }
 
     private static void averageMark(String name) {
         Map<String, String> avMark = new HashMap<String, String>();
+        List<String> names = new ArrayList<>();
         for (final Student st : students) {
             if (st.name.equals(name)) {
-                avMark.put("Математика", df.format(DoubleStream.of(st.marks.get("Математика")).sum()/st.marks.get("Математика").length));
-                avMark.put("Информатика", df.format(DoubleStream.of(st.marks.get("Информатика")).sum()/st.marks.get("Информатика").length));
-                avMark.put("Физика", df.format(DoubleStream.of(st.marks.get("Физика")).sum()/st.marks.get("Физика").length));
-                avMark.put("Философия", df.format(DoubleStream.of(st.marks.get("Философия")).sum()/st.marks.get("Философия").length));
-                avMark.put("Иностранный язык", df.format(DoubleStream.of(st.marks.get("Иностранный язык")).sum()/st.marks.get("Иностранный язык").length));
-                avMark.put("История", df.format(DoubleStream.of(st.marks.get("История")).sum()/st.marks.get("История").length));
+                avMark.put("Математика", df.format(DoubleStream.of(st.marks.get("Математика")).sum() / st.marks.get("Математика").length));
+                avMark.put("Информатика", df.format(DoubleStream.of(st.marks.get("Информатика")).sum() / st.marks.get("Информатика").length));
+                avMark.put("Физика", df.format(DoubleStream.of(st.marks.get("Физика")).sum() / st.marks.get("Физика").length));
+                avMark.put("Философия", df.format(DoubleStream.of(st.marks.get("Философия")).sum() / st.marks.get("Философия").length));
+                avMark.put("Иностранный язык", df.format(DoubleStream.of(st.marks.get("Иностранный язык")).sum() / st.marks.get("Иностранный язык").length));
+                avMark.put("История", df.format(DoubleStream.of(st.marks.get("История")).sum() / st.marks.get("История").length));
             }
+            names.add(st.name);
+        }
+        if (!names.contains(name)) {
+            System.out.println("Студента с таким именем не существует");
+            return;
         }
         System.out.println(avMark);
     }
